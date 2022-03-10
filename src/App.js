@@ -1,9 +1,11 @@
 import { useRef, useState } from "react";
 import SignaturePad from "react-signature-canvas";
 import "./App.css";
+import { Base64ToBlob } from "./components/Base64ToBlob";
 
 function App() {
   const sigPad = useRef({});
+  const [firstSig, setFirstSig] = useState("");
   const [sig, setSig] = useState();
 
   const clearSig = () => {
@@ -11,8 +13,15 @@ function App() {
     sigPad.current.on();
   };
 
+  const data = firstSig.split(",")[1];
+  const type = firstSig.split(";")[0].slice(5, 14);
+
+  const base64 = btoa(data);
+  const decoded = atob(base64);
+
   const saveSig = () => {
-    setSig(sigPad.current.toDataURL()); //saving the PNG signature image as a base64 string
+    setFirstSig(sigPad.current.toDataURL());
+    setSig(Base64ToBlob(decoded, type)); //saving the PNG signature image as a base64 string
     sigPad.current.off();
     alert(
       "Saved! Clear the canvas then check with the show last save function!"
