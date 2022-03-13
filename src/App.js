@@ -23,10 +23,24 @@ function App() {
     setFirstSig(sigPad.current.toDataURL());
     setSig(Base64ToBlob(decoded, type)); //saving the PNG signature image as a base64 string
     sigPad.current.off();
+
+    const formData = new FormData();
+    formData.append("file", sig);
+    try {
+        const res = axios.post(
+            "http://localhost:3000/signature",
+            formData
+        );
+        console.log(res);
+    } catch (ex) {
+        console.log(ex);
+    }
+    
+
     alert(
-      "Saved! Clear the canvas then check with the show last save function!"
+        "Saved! Clear the canvas then check with the show last save function!"
     );
-  };
+};
 
   const lastSig = () => {
     if (sig === undefined) {
