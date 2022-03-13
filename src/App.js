@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import SignaturePad from "react-signature-canvas";
 import "./App.css";
 import { Base64ToBlob } from "./components/Base64ToBlob";
+import axios from 'axios';
 
 function App() {
   const sigPad = useRef({});
