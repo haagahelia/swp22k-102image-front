@@ -23,11 +23,10 @@ function App() {
     setFirstSig(sigPad.current.toDataURL());
     setSig(Base64ToBlob(decoded, type)); //saving the PNG signature image as a base64 string
     sigPad.current.off();
-    alert(
-        "Saved! Clear the canvas then check with the show last save function!"
-    );
 
-    console.log(Base64ToBlob(decoded, sigPad.current.toDataURL().split(";")[0].slice(5, 14)))
+    let fileBlob = Base64ToBlob(decoded, sigPad.current.toDataURL().split(";")[0].slice(5, 14)); //Convert Base64 to blob
+
+    sendToServer(fileBlob);
   };
 
   //Function to send blob to server
@@ -40,11 +39,17 @@ function App() {
     console.log(formData.get('signature'));
 
     const res = await axios.post(
-      "http://localhost:3306/api/signatures",
+      "http://localhost:8787/api/signatures",
       formData,
       { headers: { "Content-Type" : "multipart/form-data"} }
     );
-    console.log(res);
+    console.log(res.data);
+
+    let result = res.data;
+    if(result.status == "ok")
+    {
+      alert( "Saved! Clear the canvas then check with the show last save function!");
+    }
   }
 
   const lastSig = () => {
