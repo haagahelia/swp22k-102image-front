@@ -12,20 +12,20 @@ function App() {
     sigPad.current.clear();
     sigPad.current.on();
   };
-
-  const data = firstSig.split(",")[1];
-  const type = firstSig.split(";")[0].slice(5, 14);
-
-  const base64 = btoa(data);
-  const decoded = atob(base64);
-
+  
   const saveSig = () => {
+    const data = sigPad.current.toDataURL().split(",")[1];
+    const type = sigPad.current.toDataURL().split(";")[0].slice(5, 14);
+    const base64 = btoa(data);
+    const decoded = atob(base64);
+
     setFirstSig(sigPad.current.toDataURL());
     setSig(Base64ToBlob(decoded, type)); //saving the PNG signature image as a base64 string
     sigPad.current.off();
     alert(
       "Saved! Clear the canvas then check with the show last save function!"
     );
+    console.log(Base64ToBlob(decoded, sigPad.current.toDataURL().split(";")[0].slice(5, 14)))
   };
 
   const lastSig = () => {
