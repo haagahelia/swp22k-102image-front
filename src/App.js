@@ -13,35 +13,39 @@ function App() {
     sigPad.current.clear();
     sigPad.current.on();
   };
-
-  const data = firstSig.split(",")[1];
-  const type = firstSig.split(";")[0].slice(5, 14);
-
-  const base64 = btoa(data);
-  const decoded = atob(base64);
-
+  
   const saveSig = () => {
+    const data = sigPad.current.toDataURL().split(",")[1];
+    const type = sigPad.current.toDataURL().split(";")[0].slice(5, 14);
+    const base64 = btoa(data);
+    const decoded = atob(base64);
+
     setFirstSig(sigPad.current.toDataURL());
     setSig(Base64ToBlob(decoded, type)); //saving the PNG signature image as a base64 string
     sigPad.current.off();
-
-    const formData = new FormData();
-    formData.append("file", sig);
-    try {
-        const res = axios.post(
-            "http://localhost:3000/signature",
-            formData
-        );
-        console.log(res);
-    } catch (ex) {
-        console.log(ex);
-    }
-    
-
     alert(
         "Saved! Clear the canvas then check with the show last save function!"
     );
-};
+
+    console.log(Base64ToBlob(decoded, sigPad.current.toDataURL().split(";")[0].slice(5, 14)))
+  };
+
+  //Function to send blob to server
+  //Can separate function definition later in refactoring!
+
+  const sendToServer = async (signatureBlob) => {
+    console.log(signatureBlob);
+    const formData = new FormData();
+    formData.append('signature', signatureBlob);
+    console.log(formData.get('signature'));
+
+    const res = await axios.post(
+      "http://localhost:3306/api/signatures",
+      formData,
+      { headers: { "Content-Type" : "multipart/form-data"} }
+    );
+    console.log(res);
+  }
 
   const lastSig = () => {
     if (sig === undefined) {
