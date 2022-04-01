@@ -3,6 +3,7 @@ import SignaturePad from "react-signature-canvas";
 import "./App.css";
 import { Base64ToBlob } from "./components/Base64ToBlob";
 import axios from 'axios';
+import List from "./components/List";
 
 function App() {
   const sigPad = useRef({});
@@ -71,6 +72,7 @@ function App() {
           <button onClick={clearSig}>Clear</button>
           <button onClick={saveSig}>Save</button>
           <button onClick={lastSig}>Show last save</button>
+          <List />
         </div>
       </div>
     </div>
