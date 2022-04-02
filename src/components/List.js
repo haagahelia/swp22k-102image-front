@@ -1,94 +1,46 @@
-import { useEffect, useState } from 'react';
+import { useState, useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 
 import Snackbar from '@mui/material/Snackbar';
-import axios from 'axios';
 
-/* Imports for Delete icon here 
-
-import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
-
-*/
+import SignatureImg from './SignatureImg';
+import TimeStamps from './TimeStamps';
+import TableToolbar from './TableToolbar';
 
 function List(props) {
-  const [sig, setSig] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [msg, setMsg] = useState('');
+  // const [sig, setSig] = useState([]);
 
   const handleClose = () => {
-    setOpen(false);
+    props.setOpen(false);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-  //   Fetching all signatures
-  const fetchData = async () => {
-    //   fetch('http://195.148.22.114:8777/api/signatures/all')
-    //     .then((response) => {
-    //       if (!response.ok) {
-    //         setOpen(true);
-    //         setMsg('Could not fetch the data!');
-    //       }
-    //       response.json();
-    //       console.log(response);
-    //     })
-    //     .then((data) => {
-    //       setSig(data); /* To be updated here! */
-    //       console.log(data);
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       setOpen(true);
-    //       setMsg('Something went wrong!');
-    //     });
+  const [components] = useState({
+      'signatureImgComponent': SignatureImg    
+  })
 
-    // Fetching all data using axios
-    try {
-      await axios('http://195.148.22.114:8777/api/signatures/all').then(
-        (res) => {
-          setSig(res.data.data);
-          setOpen(true);
-          console.log(res.data.data);
-        },
-        (error) => {
-          console.log('Error fetching data: ', error);
-          setOpen(true);
-          setMsg('Could not fetch the data: ', error);
-        }
-      );
-    } catch (error) {
-      console.log(error);
-      setOpen(true);
-      setMsg('Something went wrong!');
+  const rowDataGetter = (params) => {
+    return params.data;
+  };
+
+  const toolbarDataGetter = (params) => {
+    params.data.setOpen = props.setOpen
+    params.data.setMsg = props.setMsg
+    params.data.sig = props.allSignatures
+    params.data.setSig = props.setAllSignatures
+    return params.data
+  }
+
+  const getRowHeight = useCallback((params) => {
+    return params.data.rowHeight;
+  }, [])
+
+  function dateComparator(date1, date2) {
+    if (date1.signed_at > date2.signed_at) {
+      return 1
+    } else {
+      return -1
     }
-  };
-
-  /* Deleting one signature, link to signature to be added..
-
-    const deleteSignature = url => {
-        if(window.confirm('Are you sure?')){
-            fetch(url.LINK TO ADD HERE , { method: 'DELETE' })
-                .then(response => {
-                    console.log(response)
-                        if(response.ok){
-                            setOpen(true);
-                            fetchData();
-                            setMsg('Signature deleted successfully!')
-                        } else {
-                            setMsg('Something went wrong!')
-                        }
-                })
-                .catch(err => {
-                    console.log(err);
-                    setOpen(true);
-                    setMsg('Something went wrong. Please, try again!')
-                })
-        }
-    };
-    
-    */
+  }
 
   const columns = [
     {
@@ -96,47 +48,51 @@ function List(props) {
       field: 'id',
       sortable: true,
       filter: true,
-      width: 50,
+      width: 150,
     },
     {
       headerName: 'Image',
-      field: 'image',
+      cellRenderer: SignatureImg,
+      valueGetter: rowDataGetter,
       sortable: false,
       filter: false,
-      width: 100,
+      width: 220
     },
     {
       headerName: 'Pickup date',
-      field: 'signed_at',
+      cellRenderer: TimeStamps,
+      valueGetter: rowDataGetter,
+      comparator: dateComparator,
       sortable: true,
       filter: true,
-      width: 50,
+      width: 150,
     },
-    /* Column for deleting signature here..
-            {headerName: '',
-            width: 50,
-            field: /to be added here/,
-            <Stack direction="row" spacing={1}><IconButton aria-label="delete" color="error" size="small" onClick={() => deleteSignature(params)}><DeleteIcon /></IconButton></Stack>
-        
-        */
+    {
+      headerName: '',
+      width: 70,
+      cellRenderer: TableToolbar,
+      valueGetter: toolbarDataGetter
+    }
   ];
 
   return (
     <div>
       {props.showAllSig === true && (
-        <div>
-          <AgGridReact /* Design of table to be updated!*/
-            rowData={sig}
+        <div className="ag-theme-alpine" style={{height: 400, width: 600}}>
+          <AgGridReact
+            rowData={props.allSignatures}
+            components={components}
             columnDefs={columns}
             pagination={true}
-            paginationPageSize={20}
+            paginationPageSize={10}
             suppressCellFocus={true}
             animateRows={true}
+            getRowHeight={getRowHeight}
           />
 
           <Snackbar
-            open={open}
-            message={msg}
+            open={props.open}
+            message={props.AgGridReactmsg}
             autoHideDuration={9000}
             onClose={handleClose}
           />
