@@ -42,6 +42,14 @@ function List(props) {
     }
   }
 
+  /**
+   * When a user click on a row to display in a view the content 
+   */
+  function onRowClicked(e)
+  {
+    props.setShowOneSig(e.data) 
+  }
+
   const columns = [
     {
       headerName: 'UUID',
@@ -81,6 +89,7 @@ function List(props) {
         <div className="ag-theme-alpine" style={{height: 400, width: 600}}>
           <AgGridReact
             rowData={props.allSignatures}
+            onRowClicked={(e) => onRowClicked(e)}
             components={components}
             columnDefs={columns}
             pagination={true}

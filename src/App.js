@@ -10,15 +10,15 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import SignBoard from './components/SignBoard';
 
 function App() {
-  const [ allSignatures, setAllSignatures ] = useState([])
+  const [allSignatures, setAllSignatures] = useState([])
   const [open, setOpen] = useState(false);
   const [msg, setMsg] = useState('');
   const [showAllSig, setShowAllSig] = useState(false);
+  const [showOneSig, setShowOneSig] = useState(false);
 
   useEffect(() => {
     fetchData()
   }, [])
-
   // Fetching all signatures
   const fetchData = () => {
     try {
@@ -46,22 +46,46 @@ function App() {
     }
   };
 
-  return (
-    <div className='container'>
-      <SignBoard 
-        showAllSig={showAllSig} 
-        setShowAllSig={setShowAllSig}
-        fetchData={fetchData}
-      />
-      <List 
-        showAllSig={showAllSig} 
-        allSignatures={allSignatures} 
+  let onClickPreviousBtn = _ => {
+    setShowOneSig(false);
+  }
+
+  //Rendering
+  let defaultContent;
+
+  if (!showOneSig) {
+    defaultContent = <><SignBoard
+      showAllSig={showAllSig}
+      setShowAllSig={setShowAllSig}
+      fetchData={fetchData} />
+      <List
+        showAllSig={showAllSig}
+        setShowOneSig={setShowOneSig}
+        allSignatures={allSignatures}
         setAllSignatures={setAllSignatures}
         open={open}
         setOpen={setOpen}
         msg={msg}
-        setMsg={setMsg}
-      />
+        setMsg={setMsg} /></>
+  }
+  else {
+    console.log(showOneSig);
+    defaultContent = <><img
+      src={`data:image/png;base64,${showOneSig.image}`}
+      alt="Signature"
+      width={"80%"}
+      style={{ border: "1px solid black",backgroundColor:"white" }}
+    />
+    <h3>{showOneSig.id}</h3>
+    <p>{new Date(showOneSig.signed_at).toLocaleString()}</p>
+    <button onClick={_ => onClickPreviousBtn()}>back to previous screen</button>
+    </>
+  }
+
+
+  return (
+    <div className='container'>
+      {defaultContent}
     </div>
   );
 }
