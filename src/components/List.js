@@ -15,7 +15,7 @@ function List(props) {
   };
 
   const [components] = useState({
-      'signatureImgComponent': SignatureImg    
+    'signatureImgComponent': SignatureImg
   })
 
   const rowDataGetter = (params) => {
@@ -45,9 +45,8 @@ function List(props) {
   /**
    * When a user click on a row to display in a view the content 
    */
-  function onRowClicked(e)
-  {
-    props.setShowOneSig(e.data) 
+  function onRowClicked(e) {
+    props.setShowOneSig(e.data)
   }
 
   const columns = [
@@ -72,7 +71,29 @@ function List(props) {
       valueGetter: rowDataGetter,
       comparator: dateComparator,
       sortable: true,
-      filter: true,
+      filter: 'agDateColumnFilter',
+      filterParams: {
+        // provide comparator function
+        //https://www.ag-grid.com/react-data-grid/filter-date/
+        comparator: (filterLocalDateAtMidnight, cellValue) => {
+          const dateAsString = cellValue.signed_at;
+          console.log(dateAsString);
+
+          if (dateAsString == null) {
+            return 0;
+          }
+
+          const cellDate = new Date(dateAsString);
+
+          // Now that both parameters are Date objects, we can compare
+          if (cellDate < filterLocalDateAtMidnight) {
+            return -1;
+          } else if (cellDate > filterLocalDateAtMidnight) {
+            return 1;
+          }
+          return 0;
+        }
+      },
       width: 150,
     },
     {
@@ -86,7 +107,7 @@ function List(props) {
   return (
     <div>
       {props.showAllSig === true && (
-        <div className="ag-theme-alpine" style={{height: 400, width: 600}}>
+        <div className="ag-theme-alpine" style={{ height: 400, width: 600 }}>
           <AgGridReact
             rowData={props.allSignatures}
             onRowClicked={(e) => onRowClicked(e)}
