@@ -29,14 +29,12 @@ function App() {
             dataItem.rowHeight = 100;
           });
           setAllSignatures(data);
-          setMsg("Showing all signatures")
-          setOpen(true);
           console.log(res.data.data);
         },
         (error) => {
           console.log('Error fetching data: ', error);
+          setMsg('Could not fetch the data: ', error);       
           setOpen(true);
-          setMsg('Could not fetch the data: ', error);
         }
       );
     } catch (error) {
@@ -48,6 +46,7 @@ function App() {
 
   let onClickPreviousBtn = _ => {
     setShowOneSig(false);
+    setOpen(false)
   }
 
   //Rendering

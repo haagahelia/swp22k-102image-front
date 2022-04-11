@@ -46,7 +46,22 @@ function List(props) {
    * When a user click on a row to display in a view the content 
    */
   function onRowClicked(e) {
-    props.setShowOneSig(e.data)
+    try {
+      if (e.data === undefined) {
+        alert(
+          'Could not open the signature'
+        )
+      } else {
+        props.setShowOneSig(e.data)
+      }
+
+    } catch (error) {
+      console.log(error)
+      alert(
+        'Could not open the signature: ', error
+      )
+    }
+
   }
 
   const columns = [
@@ -107,7 +122,7 @@ function List(props) {
   return (
     <div>
       {props.showAllSig === true && (
-        <div className="ag-theme-alpine" style={{ height: 400, width: 600 }}>
+        <div className="ag-theme-alpine" style={{ height: 500, width: 600 }}>
           <AgGridReact
             rowData={props.allSignatures}
             onRowClicked={(e) => onRowClicked(e)}

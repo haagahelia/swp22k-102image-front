@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import { base64ToBlob } from "../utils/helpers";
 import axios from "axios";
 
@@ -35,36 +35,42 @@ export default function SignBoard({ showAllSig, setShowAllSig, fetchData }) {
     //Can separate function definition later in refactoring!
 
     const sendToServer = async (signatureBlob) => {
-        console.log(signatureBlob);
-        const formData = new FormData();
-        formData.append('signature', signatureBlob);
-        console.log(formData.get('signature'));
-
-        const res = await axios.post(
-            'http://195.148.22.114:8777/api/signatures',
-            formData,
-            { headers: { 'Content-Type': 'multipart/form-data' } }
-        );
-        console.log(res.data);
-        fetchData()
-
-        let result = res.data;
-        if (result.status === 'ok') {
-            alert(
-                'Saved! Clear the canvas then check with the show last save function!'
+            console.log(signatureBlob);
+            const formData = new FormData();
+            formData.append('signature', signatureBlob);
+            console.log(formData.get('signature'));
+        try {
+            const res = await axios.post(
+                'http://195.148.22.114:8777/api/signatures',
+                formData,
+                { headers: { 'Content-Type': 'multipart/form-data' } }
             );
+            console.log(res.data);
+            fetchData();
+
+            if (res.status === 201) {
+                alert(
+                    'Saved! Clear the canvas then check with the show last save function!'
+                );
+            }
+        } catch (error) {
+            console.error(error);
+            alert(
+                'Could not save the signature: ', error.message
+            )
+
         }
+
     };
 
     const lastSig = () => {
         if (prevSignature === undefined) {
             alert('No signature has been saved!');
         } else {
-        clearSig();
+            clearSig();
             sigPad.current.fromDataURL(prevSignature);
         }
     };
-
     const showSignatures = () => {
         setShowAllSig(!showAllSig);
     };
