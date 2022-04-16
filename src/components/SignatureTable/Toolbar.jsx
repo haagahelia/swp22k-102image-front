@@ -2,7 +2,7 @@ import React from "react"
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
 
-export default function TableToolbar(props) {
+export default function Toolbar(props) {
     const rowData = props.valueFormatted ? props.valueFormatted : props.value
 
     const deleteSignature = async () => {
