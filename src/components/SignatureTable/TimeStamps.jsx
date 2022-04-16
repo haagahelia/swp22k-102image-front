@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react"
-import moment from "moment-timezone"
+import moment from "moment-mini"
 
 export default function TimeStamps(props) {
     const [ timestamps, setTimestamps ] = useState(null)
     const rowData = props.valueFormatted ? props.valueFormatted : props.value
-    
+
     useEffect(() => {
-        const ts = moment(rowData.signed_at).tz("Asia/Omsk").format("DD-MM-YYYY HH:mm")
-        setTimestamps(ts)
+        if (rowData) {
+            const ts = moment(rowData).format("DD-MM-YYYY HH:mm")
+            setTimestamps(ts)
+        }
     }, [rowData])
 
     return (

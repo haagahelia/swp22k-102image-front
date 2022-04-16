@@ -1,11 +1,13 @@
-import React, { useRef, useState, useEffect } from "react"
+import React, { useRef, useState } from "react"
+import { useParams } from "react-router-dom";
 import { base64ToBlob } from "../utils/helpers";
-import axios from "axios";
+import Axios from "../services/axios";
 
 import SignaturePad from 'react-signature-canvas';
 
-export default function SignBoard({ showAllSig, setShowAllSig, fetchData }) {
+export default function SignBoard() {
     const sigPad = useRef({});
+    const params = useParams()
     const [prevSignature, setPrevSignature] = useState();
 
     const clearSig = () => {
@@ -35,18 +37,13 @@ export default function SignBoard({ showAllSig, setShowAllSig, fetchData }) {
     //Can separate function definition later in refactoring!
 
     const sendToServer = async (signatureBlob) => {
-            console.log(signatureBlob);
-            const formData = new FormData();
-            formData.append('signature', signatureBlob);
-            console.log(formData.get('signature'));
+        console.log(signatureBlob);
+        const formData = new FormData();
+        formData.append('signature', signatureBlob);
+        console.log(formData.get('signature'));
         try {
-            const res = await axios.post(
-                'http://195.148.22.114:8777/api/signatures',
-                formData,
-                { headers: { 'Content-Type': 'multipart/form-data' } }
-            );
+            const res = await Axios.signOrder(params.orderId, formData)
             console.log(res.data);
-            fetchData();
 
             if (res.status === 201) {
                 alert(
@@ -71,9 +68,9 @@ export default function SignBoard({ showAllSig, setShowAllSig, fetchData }) {
             sigPad.current.fromDataURL(prevSignature);
         }
     };
-    const showSignatures = () => {
-        setShowAllSig(!showAllSig);
-    };
+    // const showSignatures = () => {
+    //     setShowAllSig(!showAllSig);
+    // };
 
 
     return (
@@ -84,13 +81,13 @@ export default function SignBoard({ showAllSig, setShowAllSig, fetchData }) {
             <div>
                 <div className='buttonGroup'>
                     <button onClick={clearSig}>Clear</button>
-                    <button onClick={saveSig}>Save</button>
+                    <button onClick={saveSig}>Sign</button>
                     <button onClick={lastSig}>Show last save</button>
-                    {showAllSig === true ? (
+                    {/* {showAllSig === true ? (
                         <button onClick={showSignatures}>Hide all signatures</button>
                     ) : (
                         <button onClick={showSignatures}>Show all signatures</button>
-                    )}
+                    )} */}
                 </div>
             </div>
         </>
