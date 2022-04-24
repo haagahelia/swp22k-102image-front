@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom"
 export default function Toolbar(props) {
     const navigate = useNavigate()
     const rowData = props.valueFormatted ? props.valueFormatted : props.value
-    
+
     const signOrder = () => {
         navigate(`/sign/${rowData.uuid}`)
+        rowData.setOrder(rowData.uuid)
     }
 
     return (
