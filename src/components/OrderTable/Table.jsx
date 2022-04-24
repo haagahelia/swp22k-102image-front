@@ -2,9 +2,12 @@ import React from "react"
 import { AgGridReact } from 'ag-grid-react';
 
 import Toolbar from "./Toolbar"
+import PickupTimeStamp from "./PickupTimestamp";
+import SignedAtTimeStamp from "./SignedAtTimestamp";
 
-export default function Table({ orders }) {
+export default function Table({ orders, setOrder }) {
     const toolbarDataGetter = (params) => {
+        params.data.setOrder = setOrder
         return params.data
     }
 
@@ -33,48 +36,54 @@ export default function Table({ orders }) {
     //     }
     
     // }
+
+    const rowDataGetter = (params) => {
+        return params.data;
+    };
     
     const columns = [
         {
             headerName: 'UUID',
             field: 'uuid',
             sortable: true,
-            filter: true,
+            filter: 'agTextColumnFilter',
             width: 150,
         },
         {
             headerName: 'Country',
             field: 'country_code',
             sortable: true,
-            filter: true,
+            filter: 'agTextColumnFilter',
             width: 110,
         },
         {
             headerName: 'Order Type',
             field: 'order_type',
             sortable: true,
-            filter: true,
+            filter: 'agTextColumnFilter',
             width: 100,
         },
         {
             headerName: 'Pick-up Address',
             field: 'pu_address',
             sortable: true,
-            filter: true,
+            filter: 'agTextColumnFilter',
             width: 260,
         },
         {
             headerName: 'Planned Pick-up Time',
             field: 'pu_planned_time',
+            valueGetter: rowDataGetter,
+            cellRenderer: PickupTimeStamp,
             sortable: true,
-            filter: true,
             width: 200,
         },
         {
             headerName: 'Signed At',
             field: 'pu_signed_at',
+            valueGetter: rowDataGetter,
+            cellRenderer: SignedAtTimeStamp,
             sortable: true,
-            filter: true,
             width: 200,
         },
         {

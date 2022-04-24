@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import moment from "moment-mini"
 
-export default function TimeStamps(props) {
+export default function SignedAtTimeStamp(props) {
     const [ timestamps, setTimestamps ] = useState(null)
     const rowData = props.valueFormatted ? props.valueFormatted : props.value
 

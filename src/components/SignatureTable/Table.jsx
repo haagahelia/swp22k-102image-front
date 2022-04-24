@@ -5,7 +5,7 @@ import SignatureImg from './SignatureImg';
 import TimeStamps from './TimeStamps';
 // import Toolbar from './Toolbar';
 
-function Table({ orders }) {
+function Table({ orders, fetchOrders }) {
   // const [sig, setSig] = useState([]);
 
   // const handleClose = () => {
@@ -28,13 +28,13 @@ function Table({ orders }) {
     // return params.data
   // }
 
-  // function dateComparator(date1, date2) {
-  //   if (date1.signed_at > date2.signed_at) {
-  //     return 1
-  //   } else {
-  //     return -1
-  //   }
-  // }
+  function dateComparator(date1, date2) {
+    if (date1.signed_at > date2.signed_at) {
+      return 1
+    } else {
+      return -1
+    }
+  }
 
   /**
    * When a user click on a row to display in a view the content 
@@ -60,10 +60,10 @@ function Table({ orders }) {
 
   const columns = [
     {
-      headerName: 'Order UUID',
+      headerName: "Order's UUID",
       field: 'uuid',
+      filter: 'agTextColumnFilter',
       sortable: true,
-      filter: true,
       width: 220,
     },
     {
@@ -72,53 +72,41 @@ function Table({ orders }) {
       valueGetter: rowDataGetter,
       sortable: false,
       filter: false,
-      width: 230,
+      width: 220,
     },
     {
       headerName: 'Signed At',
       field: 'pu_signed_at',
+      valueGetter: rowDataGetter,
       cellRenderer: TimeStamps,
       sortable: true,
-      filter: true,
       width: 140,
-    },
-    // {
-    //   headerName: 'Signed At',
-    //   cellRenderer: TimeStamps,
-    //   valueGetter: rowDataGetter,
-    //   comparator: dateComparator,
-    //   sortable: true,
-    //   filter: 'agDateColumnFilter',
-    //   filterParams: {
-    //     // provide comparator function
-    //     //https://www.ag-grid.com/react-data-grid/filter-date/
-    //     comparator: (filterLocalDateAtMidnight, cellValue) => {
-    //       const dateAsString = cellValue.signed_at;
-    //       console.log(dateAsString);
+      comparator: dateComparator,
+      filter: 'agDateColumnFilter',
+      filterParams: {
+        // provide comparator function
+        //https://www.ag-grid.com/react-data-grid/filter-date/
+        comparator: (filterLocalDateAtMidnight, cellValue) => {
 
-    //       if (dateAsString == null) {
-    //         return 0;
-    //       }
+          const dateAsString = cellValue.pu_signed_at;
+          console.log(dateAsString);
 
-    //       const cellDate = new Date(dateAsString);
+          if (dateAsString == null) {
+            return 0;
+          }
 
-    //       // Now that both parameters are Date objects, we can compare
-    //       if (cellDate < filterLocalDateAtMidnight) {
-    //         return -1;
-    //       } else if (cellDate > filterLocalDateAtMidnight) {
-    //         return 1;
-    //       }
-    //       return 0;
-    //     }
-    //   },
-    //   width: 150,
-    // },
-    // {
-    //   headerName: '',
-    //   width: 70,
-    //   cellRenderer: Toolbar,
-    //   valueGetter: toolbarDataGetter
-    // }
+          const cellDate = new Date(dateAsString);
+
+          // Now that both parameters are Date objects, we can compare
+          if (cellDate < filterLocalDateAtMidnight) {
+            return -1;
+          } else if (cellDate > filterLocalDateAtMidnight) {
+            return 1;
+          }
+          return 0;
+        }
+      }
+    }
   ];
 
   return (

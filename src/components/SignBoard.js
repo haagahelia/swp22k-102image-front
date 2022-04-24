@@ -1,13 +1,14 @@
 import React, { useRef, useState } from "react"
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { base64ToBlob } from "../utils/helpers";
 import Axios from "../services/axios";
 
 import SignaturePad from 'react-signature-canvas';
 
-export default function SignBoard() {
+export default function SignBoard({ orders, setOrders, order }) {
     const sigPad = useRef({});
     const params = useParams()
+    const navigate = useNavigate()
     const [prevSignature, setPrevSignature] = useState();
 
     const clearSig = () => {
@@ -30,7 +31,16 @@ export default function SignBoard() {
         //   sigPad.current.toDataURL().split(';')[0].slice(5, 14)
         // ); //Convert Base64 to blob
         const blob = await base64ToBlob(sigPad.current.toDataURL())
+        const now = new Date()
+        const selected = orders.find(x => x.uuid === order)
+        const index = orders.findIndex(x => x.uuid === order)
+        setOrders([
+            ...orders.slice(0, index),
+            { ...selected, pu_signed_at: now.toISOString(), pu_signature_image: sigPad.current.toDataURL().split(",")[1] },
+            ...orders.slice(index + 1)
+        ])
         sendToServer(blob);
+        navigate("/")
     };
 
     //Function to send blob to server

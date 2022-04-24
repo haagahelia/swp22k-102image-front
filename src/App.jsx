@@ -22,6 +22,7 @@ function App() {
   const [ orders, setOrders ] = useState([])
   const [ isOpen, setIsOpen ] = useState(false)
   const [ msg, setMsg ] = useState("")
+  const [ order, setOrder ] = useState({})
 
   useEffect(() => {
     fetchOrders()
@@ -110,9 +111,9 @@ function App() {
     <div>
       <Router>
         <Routes>
-          <Route path="/" element={<Home orders={orders} />} />
+          <Route path="/" element={<Home orders={orders} setOrder={setOrder} />} />
           <Route path="/signatures" element={<Signature orders={orders} />} />
-          <Route path="/sign/:orderId" element={<Sign />} />
+          <Route path="/sign/:orderId" element={<Sign orders={orders} setOrders={setOrders} order={order} />} />
         </Routes>
       </Router>
 
