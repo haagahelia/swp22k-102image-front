@@ -1,7 +1,7 @@
 import Navbar from "../components/Navbar";
 
 //orderForm will be replaced when the form is ready
-export default function CreateAnOrder({ orderForm }) {
+export default function NewOrder({ orderForm }) {
   return (
     <div className="container">
       <Navbar />
