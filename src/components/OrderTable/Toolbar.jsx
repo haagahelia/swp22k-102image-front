@@ -1,5 +1,6 @@
 import React from "react"
 import BorderColorIcon from '@mui/icons-material/BorderColor';
+import DeleteIcon from '@mui/icons-material/Delete'; 
 import { useNavigate } from "react-router-dom"
 
 export default function Toolbar(props) {
@@ -11,9 +12,22 @@ export default function Toolbar(props) {
         rowData.setOrder(rowData.uuid)
     }
 
+    const deleteOrder = () => {
+        try{
+            
+        }catch {
+
+        }
+    }
+
     return (
-        <div style={{ marginTop: 7 }}>
-            <BorderColorIcon onClick={signOrder}/>
+        <div>
+            <div style={{ marginTop: 7 }}>
+                <BorderColorIcon onClick={signOrder}/>
+            </div>
+            <div style={{ marginTop: 7 }}>
+                <DeleteIcon onClick={deleteOrder} color="error"/>
+            </div>
         </div>
     )
 }
